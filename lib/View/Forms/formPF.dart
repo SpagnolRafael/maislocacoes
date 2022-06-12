@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:flutter/services.dart';
-import 'package:mais_locacoes/cadastros/clientes/cliente.dart';
-import 'package:mais_locacoes/pages/cliente_page.dart';
+import 'package:mais_locacoes/Model/cliente.dart';
+import 'package:mais_locacoes/View/BottomAppBar/cliente_page.dart';
 
 class FormularioPF extends StatefulWidget {
   const FormularioPF({Key? key}) : super(key: key);

@@ -1,26 +1,25 @@
-// ignore_for_file: use_key_in_widget_constructors, non_constant_identifier_names
-
 import 'dart:io';
+
 import 'package:brasil_fields/brasil_fields.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mais_locacoes/cadastros/clientes/cliente.dart';
-import 'package:mais_locacoes/pages/cliente_page.dart';
+import 'package:mais_locacoes/Model/cliente.dart';
+import 'package:mais_locacoes/View/BottomAppBar/cliente_page.dart';
 import 'package:intl/intl.dart';
 
 // ignore: must_be_immutable
-class ProfilePF extends StatefulWidget {
+class ProfilePJ extends StatefulWidget {
   Cliente cliente;
-  ProfilePF(this.cliente);
+  ProfilePJ(this.cliente, {Key? key}) : super(key: key);
 
   @override
-  _ProfilePFState createState() => _ProfilePFState();
+  _ProfilePJState createState() => _ProfilePJState();
 }
 
-class _ProfilePFState extends State<ProfilePF> {
+class _ProfilePJState extends State<ProfilePJ> {
   late TextEditingController _nomeController;
   late TextEditingController _cpfController;
   late TextEditingController _rgController;
@@ -32,6 +31,9 @@ class _ProfilePFState extends State<ProfilePF> {
   late TextEditingController _bairroController;
   late TextEditingController _cidadeController;
   late TextEditingController _estadoController;
+  late TextEditingController _razaoController;
+  late TextEditingController _cnpjController;
+  late TextEditingController _ieController;
   late TextEditingController _contato1Controller;
   late TextEditingController _contato2Controller;
   late TextEditingController _obsController;
@@ -117,7 +119,6 @@ class _ProfilePFState extends State<ProfilePF> {
   @override
   void initState() {
     super.initState();
-
     _nomeController = TextEditingController(text: widget.cliente.nome);
     _cpfController = TextEditingController(text: widget.cliente.cpf);
     _rgController = TextEditingController(text: widget.cliente.rg);
@@ -131,22 +132,27 @@ class _ProfilePFState extends State<ProfilePF> {
     _bairroController = TextEditingController(text: widget.cliente.bairro);
     _cidadeController = TextEditingController(text: widget.cliente.cidade);
     _estadoController = TextEditingController(text: widget.cliente.estado);
+    _razaoController = TextEditingController(text: widget.cliente.razaoSocial);
+    _cnpjController = TextEditingController(text: widget.cliente.cnpj);
+    _ieController =
+        TextEditingController(text: widget.cliente.inscricaoEstadual);
     _contato1Controller = TextEditingController(text: widget.cliente.contato1);
     _contato2Controller = TextEditingController(text: widget.cliente.contato2);
-    _obsController = TextEditingController(text: widget.cliente.observacao);
+    _obsController = TextEditingController();
     _recuperarImagemFirestore();
   }
 
   @override
   Widget build(BuildContext context) {
     bool clienteProblema = widget.cliente.rate!;
-
     Timestamp timeStamp = widget.cliente.dataCadastro;
     var date =
         DateTime.fromMicrosecondsSinceEpoch(timeStamp.microsecondsSinceEpoch);
     String dateFormat = DateFormat("dd/MM/yyyy").format(date);
-
     _alterarDados() {
+      String razaoSocial = _razaoController.text;
+      String inscricaoEstadual = _ieController.text;
+      String cnpj = _cnpjController.text;
       String nome = _nomeController.text;
       String cpf = _cpfController.text;
       String rg = _rgController.text;
@@ -160,11 +166,13 @@ class _ProfilePFState extends State<ProfilePF> {
       String contato1 = _contato1Controller.text;
       String contato2 = _contato2Controller.text;
       String email = _emailController.text;
-      String observacao = _obsController.text;
       String? id = widget.cliente.id;
       FirebaseFirestore database = FirebaseFirestore.instance;
       database.collection("clientes").doc(widget.cliente.id).update({
         "id": id,
+        "razaoSocial": razaoSocial,
+        "inscricaoEstadual": inscricaoEstadual,
+        "cnpj": cnpj,
         "nome": nome,
         "cpf": cpf,
         "rg": rg,
@@ -178,7 +186,6 @@ class _ProfilePFState extends State<ProfilePF> {
         "bairro": bairro,
         "cidade": cidade,
         "estado": estado,
-        "observacao": observacao,
       }).then((value) {
         Navigator.pop(context);
         Navigator.pushReplacement(context,
@@ -187,7 +194,8 @@ class _ProfilePFState extends State<ProfilePF> {
       setState(() {});
     }
 
-    var FormPF = SingleChildScrollView(
+    // ignore: non_constant_identifier_names
+    var FormPJ = SingleChildScrollView(
       child: Column(
         children: [
           const Padding(
@@ -200,8 +208,19 @@ class _ProfilePFState extends State<ProfilePF> {
               ),
             ),
           ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+            child: Center(
+              child: Text(
+                "Dados Responsável da Empresa",
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
             child: TextFormField(
               controller: _nomeController,
               autocorrect: false,
@@ -231,7 +250,7 @@ class _ProfilePFState extends State<ProfilePF> {
                     controller: _cpfController,
                     keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.fromLTRB(20, 8, 20, 16),
+                      contentPadding: const EdgeInsets.fromLTRB(25, 8, 25, 16),
                       filled: true,
                       fillColor: Colors.white,
                       labelText: "CPF *",
@@ -310,8 +329,80 @@ class _ProfilePFState extends State<ProfilePF> {
               ),
             ],
           ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(15, 15, 15, 5),
+            child: Center(
+              child: Text(
+                "Dados da Empresa",
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
           Padding(
-            padding: const EdgeInsets.all(15),
+            padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
+            child: TextFormField(
+              controller: _razaoController,
+              autocorrect: false,
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                contentPadding: const EdgeInsets.fromLTRB(32, 16, 32, 8),
+                filled: true,
+                fillColor: Colors.white,
+                labelText: "Razão Social *",
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(40),
+                ),
+              ),
+            ),
+          ),
+          Row(
+            children: [
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: TextFormField(
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      CnpjInputFormatter(),
+                    ],
+                    controller: _cnpjController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(8, 8, 8, 16),
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: "CNPJ *",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(15),
+                  child: TextFormField(
+                    controller: _ieController,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: "Inscrição Estadual",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(40),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 5, 15, 15),
             child: TextFormField(
               controller: _emailController,
               autocorrect: false,
@@ -412,7 +503,6 @@ class _ProfilePFState extends State<ProfilePF> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(5, 15, 15, 15),
                   child: TextFormField(
-                    autocorrect: false,
                     controller: _bairroController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -435,7 +525,6 @@ class _ProfilePFState extends State<ProfilePF> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(15, 15, 5, 15),
                   child: TextFormField(
-                    autocorrect: false,
                     controller: _cidadeController,
                     keyboardType: TextInputType.text,
                     decoration: InputDecoration(
@@ -470,73 +559,34 @@ class _ProfilePFState extends State<ProfilePF> {
               ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 30, 15, 40),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.check),
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color.fromARGB(255, 4, 6, 107),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _alterarDados();
-                    });
-                  },
-                  label: const Text(
-                    "Atualizar",
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                  ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(15, 30, 15, 40),
+            child: ElevatedButton.icon(
+              icon: const Icon(Icons.check),
+              style: ElevatedButton.styleFrom(
+                primary: const Color.fromARGB(255, 4, 6, 107),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(40)),
+              ),
+              onPressed: () {
+                setState(() {
+                  _alterarDados();
+                });
+              },
+              label: const Text(
+                "Alterar",
+                style: TextStyle(
+                  fontSize: 25,
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(15, 30, 15, 40),
-                child: ElevatedButton.icon(
-                  icon: const Icon(Icons.close),
-                  style: ElevatedButton.styleFrom(
-                    primary: const Color.fromARGB(255, 224, 0, 0),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(40)),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      FirebaseFirestore database = FirebaseFirestore.instance;
-                      database
-                          .collection("clientes")
-                          .doc(widget.cliente.id)
-                          .update({
-                        "excluido": true,
-                      }).then((value) => Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ClientePage())));
-                      setState(() {});
-                    });
-                  },
-                  label: const Text(
-                    "Delete",
-                    style: TextStyle(
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-              )
-            ],
+            ),
           )
         ],
       ),
     );
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Perfil de ${widget.cliente.nome}"),
-      ),
+      appBar: AppBar(title: Text("Perfil de ${widget.cliente.razaoSocial}")),
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
@@ -602,7 +652,7 @@ class _ProfilePFState extends State<ProfilePF> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Text(
-                  "Data de Cadastro: $dateFormat",
+                  "Data de Cadastro $dateFormat",
                   style: const TextStyle(
                     color: Colors.grey,
                   ),
@@ -641,7 +691,7 @@ class _ProfilePFState extends State<ProfilePF> {
                   ],
                 ),
               ),
-              FormPF,
+              FormPJ,
             ],
           ),
         ),

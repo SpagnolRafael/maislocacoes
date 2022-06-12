@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mais_locacoes/pages/home_page.dart';
+import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
 import 'package:mais_locacoes/usuario.dart';
 
 class Login extends StatefulWidget {

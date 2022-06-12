@@ -1,13 +1,13 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:mais_locacoes/pages/cliente_page.dart';
-import 'package:mais_locacoes/contratosVencidos.dart';
-import 'package:mais_locacoes/graficos.dart';
+import 'package:mais_locacoes/View/BottomAppBar/cliente_page.dart';
+import 'package:mais_locacoes/View/TabBar/contratosVencidos.dart';
+import 'package:mais_locacoes/View/TabBar/graficos.dart';
 import 'package:mais_locacoes/pages/locacoes_page.dart';
-import 'package:mais_locacoes/pages/login.dart';
-import 'package:mais_locacoes/mesVencidos.dart';
+import 'package:mais_locacoes/View/login.dart';
+import 'package:mais_locacoes/View/TabBar/mesVencidos.dart';
 
-import '../perdidas.dart';
+import '../TabBar/perdidas.dart';
 import 'produtos_page.dart';
 
 class Home extends StatefulWidget {

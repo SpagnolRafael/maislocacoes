@@ -4,9 +4,9 @@ import 'package:date_format/date_format.dart';
 import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mais_locacoes/cadastros/produtos/produto.dart';
+import 'package:mais_locacoes/Model/produto.dart';
 
-import '../../pages/produtos_page.dart';
+import '../BottomAppBar/produtos_page.dart';
 
 class FormProduto extends StatefulWidget {
   const FormProduto({Key? key}) : super(key: key);

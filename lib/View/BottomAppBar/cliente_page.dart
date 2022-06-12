@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mais_locacoes/cadastros/clientes/cliente.dart';
-import 'package:mais_locacoes/cadastros/clientes/formPF.dart';
-import 'package:mais_locacoes/cadastros/clientes/formPJ.dart';
-import 'package:mais_locacoes/pages/home_page.dart';
-import 'package:mais_locacoes/profiles/profile_pf.dart';
-import 'package:mais_locacoes/profiles/profile_pj.dart';
-import 'locacoes_page.dart';
+import 'package:mais_locacoes/Model/cliente.dart';
+import 'package:mais_locacoes/View/Forms/formPF.dart';
+import 'package:mais_locacoes/View/Forms/formPJ.dart';
+import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
+import 'package:mais_locacoes/View/profile_pf.dart';
+import 'package:mais_locacoes/View/profile_pj.dart';
+import '../../pages/locacoes_page.dart';
 import 'produtos_page.dart';
 
 class ClientePage extends StatefulWidget {

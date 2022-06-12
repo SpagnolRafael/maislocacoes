@@ -1,10 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:mais_locacoes/cadastros/produtos/produto.dart';
-import 'package:mais_locacoes/pages/home_page.dart';
-import '../cadastros/produtos/form_produto.dart';
+import 'package:mais_locacoes/Model/produto.dart';
+import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
+import '../Forms/form_produto.dart';
 import 'cliente_page.dart';
-import 'locacoes_page.dart';
+import '../../pages/locacoes_page.dart';
 
 class ProdutosPage extends StatefulWidget {
   const ProdutosPage({Key? key}) : super(key: key);

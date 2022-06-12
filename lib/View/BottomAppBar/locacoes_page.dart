@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mais_locacoes/cadastros/locacoes/form_locacoes.dart';
-import 'package:mais_locacoes/pages/home_page.dart';
+import 'package:mais_locacoes/View/Forms/form_locacoes.dart';
+import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
 
-import 'cliente_page.dart';
-import 'produtos_page.dart';
+import '../View/cliente_page.dart';
+import '../View/produtos_page.dart';
 
 class Locacao extends StatefulWidget {
   const Locacao({Key? key}) : super(key: key);

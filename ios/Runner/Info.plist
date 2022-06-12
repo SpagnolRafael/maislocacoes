@@ -49,5 +49,7 @@
 	<string>Permitir acesso a camera</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Permitir acesso ao microfone</string>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>
