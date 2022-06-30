@@ -41,7 +41,7 @@ class Cobranca extends Equatable {
   final bool pago;
   final Fatura fatura;
 
-  Cobranca({
+  const Cobranca({
     required this.fatura,
     required this.pago,
     required this.vencimento,
@@ -58,7 +58,7 @@ class Fatura extends Equatable {
   final DateTime dataInicio;
   final DateTime dataFim;
 
-  Fatura({
+  const Fatura({
     required this.valor,
     required this.cliente,
     required this.produtos,

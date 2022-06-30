@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_locacoes/Model/cliente.dart';
+import 'package:mais_locacoes/View/BottomAppBar/locacoes_page.dart';
 import 'package:mais_locacoes/View/Forms/formPF.dart';
 import 'package:mais_locacoes/View/Forms/formPJ.dart';
 import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
-import 'package:mais_locacoes/View/profile_pf.dart';
-import 'package:mais_locacoes/View/profile_pj.dart';
-import '../../pages/locacoes_page.dart';
+import 'package:mais_locacoes/View/Profiles/profile_pf.dart';
+import 'package:mais_locacoes/View/Profiles/profile_pj.dart';
 import 'produtos_page.dart';
 
 class ClientePage extends StatefulWidget {
@@ -29,10 +29,9 @@ class _ClientePageState extends State<ClientePage> {
     List listaClientes = [];
     for (DocumentSnapshot item in querySnapshot.docs) {
       var dados = item.data() as Map<String, dynamic>;
-      var dadoID = item.id;
 
       Cliente cliente = Cliente(
-        id: dadoID,
+        id: dados["id"],
         razaoSocial: dados["razaoSocial"],
         cnpj: dados["cnpj"],
         inscricaoEstadual: dados["inscricaoEstadual"],
@@ -292,8 +291,10 @@ class _ClientePageState extends State<ClientePage> {
                 Navigator.pushReplacement(context,
                     MaterialPageRoute(builder: (context) => const Home()));
               } else if (_indiceAtual == 2) {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => const Locacao()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const LocacaoPage()));
               } else if (_indiceAtual == 3) {
                 Navigator.pushReplacement(
                     context,

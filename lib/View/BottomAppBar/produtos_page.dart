@@ -2,9 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_locacoes/Model/produto.dart';
 import 'package:mais_locacoes/View/BottomAppBar/home_page.dart';
+import 'package:mais_locacoes/View/BottomAppBar/locacoes_page.dart';
 import '../Forms/form_produto.dart';
 import 'cliente_page.dart';
-import '../../pages/locacoes_page.dart';
 
 class ProdutosPage extends StatefulWidget {
   const ProdutosPage({Key? key}) : super(key: key);
@@ -27,7 +27,6 @@ class _ProdutosPageState extends State<ProdutosPage> {
     List listaProdutos = [];
     for (DocumentSnapshot item in querySnapshot.docs) {
       var dados = item.data() as Map<String, dynamic>;
-      var dadoID = item.id;
 
       Produto produto = Produto(
         dataCompra: dados["dataCompra"],
@@ -35,7 +34,7 @@ class _ProdutosPageState extends State<ProdutosPage> {
         codigo: dados["codigo"],
         valorCompra: dados["valorCompra"],
         mensalidade: dados["mensalidade"],
-        id: dadoID,
+        id: dados["id"],
         fornecedor: dados["fornecedor"],
         locado: dados["locado"],
       );
@@ -212,8 +211,10 @@ class _ProdutosPageState extends State<ProdutosPage> {
                       MaterialPageRoute(
                           builder: (context) => const ClientePage()));
                 } else if (_indiceAtual == 2) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const Locacao()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LocacaoPage()));
                 } else if (_indiceAtual == 0) {
                   Navigator.pushReplacement(context,
                       MaterialPageRoute(builder: (context) => const Home()));

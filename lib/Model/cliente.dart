@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part "cliente.g.dart";
+
+@JsonSerializable(anyMap: true, explicitToJson: true)
 class Cliente {
   String? razaoSocial;
   String? inscricaoEstadual;
@@ -46,31 +51,12 @@ class Cliente {
     required this.cidade,
     required this.estado,
   });
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
-      "id": id,
-      "urlImagem": urlImagem,
-      "nome": nome,
-      "cpf": cpf,
-      "rg": rg,
-      "razaoSocial": razaoSocial,
-      "contato1": contato1,
-      "contato2": contato2,
-      "email": email,
-      "cnpj": cnpj,
-      "inscricaoEstadual": inscricaoEstadual,
-      "logradouro": logradouro,
-      "numero": numero,
-      "complemento": complemento,
-      "cep": cep,
-      "bairro": bairro,
-      "cidade": cidade,
-      "estado": estado,
-      "dataCadastro": dataCadastro,
-      "excluido": false,
-      "rate": false,
-      "observacao": observacao,
-    };
-    return map;
-  }
+
+  factory Cliente.fromJson(Map<String, dynamic> json) =>
+      _$ClienteFromJson(json);
+
+  /// `toJson` is the convention for a class to declare support for serialization
+  /// to JSON. The implementation simply calls the private, generated
+  /// helper method `_$UserToJson`.
+  Map<String, dynamic> toJson() => _$ClienteToJson(this);
 }

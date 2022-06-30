@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:mais_locacoes/View/BottomAppBar/cliente_page.dart';
+import 'package:mais_locacoes/View/BottomAppBar/locacoes_page.dart';
 import 'package:mais_locacoes/View/TabBar/contratosVencidos.dart';
 import 'package:mais_locacoes/View/TabBar/graficos.dart';
-import 'package:mais_locacoes/pages/locacoes_page.dart';
 import 'package:mais_locacoes/View/login.dart';
 import 'package:mais_locacoes/View/TabBar/mesVencidos.dart';
 
@@ -191,8 +191,10 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                       MaterialPageRoute(
                           builder: (context) => const ClientePage()));
                 } else if (_indiceAtual == 2) {
-                  Navigator.pushReplacement(context,
-                      MaterialPageRoute(builder: (context) => const Locacao()));
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const LocacaoPage()));
                 } else if (_indiceAtual == 3) {
                   Navigator.pushReplacement(
                       context,

@@ -75,8 +75,16 @@ class _FormularioPJState extends State<FormularioPJ> {
       _bairroController.text = "";
       _cidadeController.text = "";
       _estadoController.text = "";
+
       FirebaseFirestore database = FirebaseFirestore.instance;
-      await database.collection("clientes").doc().set(cliente.toMap());
+      CollectionReference toolsCollectionRef =
+          FirebaseFirestore.instance.collection("clientes");
+      String newDocID = toolsCollectionRef.doc().id;
+      await database.collection("clientes").doc(newDocID).set({
+        ...cliente.toJson(),
+        "id": newDocID,
+      });
+
       Navigator.pop(context);
       Navigator.pushReplacement(context,
           MaterialPageRoute(builder: (context) => const ClientePage()));

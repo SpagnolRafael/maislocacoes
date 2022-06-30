@@ -15,63 +15,15 @@ import 'package:mais_locacoes/recursos/widgets/custom_text_field.dart';
 import '../../Model/cliente.dart';
 import '../../Model/produto.dart';
 
-class FormLocacoes extends StatefulWidget {
-  const FormLocacoes({Key? key}) : super(key: key);
+class ProfileLocacao extends StatefulWidget {
+  Locacao locacao;
+  ProfileLocacao(this.locacao, {Key? key}) : super(key: key);
 
   @override
-  _FormLocacoesState createState() => _FormLocacoesState();
+  State<ProfileLocacao> createState() => _ProfileLocacaoState();
 }
 
-class _FormLocacoesState extends State<FormLocacoes> {
-  List<Cliente> _listaClientes = [];
-  List<Produto> _listaProdutos = [];
-
-  //final _globalKey = GlobalKey<FormState>();
-
-  @override
-  void initState() {
-    super.initState();
-    _initController();
-  }
-
-  Future<void> _initController() async {
-    await _recuperarProdutos();
-    await recuperarClientes();
-    _changeDropList();
-    _changeDropProductList();
-    setState(() {});
-  }
-
-  Future<List> _recuperarProdutos() async {
-    _listaProdutos = [];
-
-    FirebaseFirestore database = FirebaseFirestore.instance;
-    QuerySnapshot querySnapshot = await database
-        .collection("produtos")
-        .where("excluido", isEqualTo: false)
-        .where("locado", isEqualTo: false)
-        .orderBy("nome")
-        .orderBy("codigo")
-        .get();
-    for (DocumentSnapshot item in querySnapshot.docs) {
-      var dados = item.data() as Map<String, dynamic>;
-      var dadoID = item.id;
-
-      Produto produto = Produto(
-        id: dadoID,
-        dataCompra: dados["dataCompra"],
-        nome: dados["nome"],
-        codigo: dados["codigo"],
-        valorCompra: dados["valorCompra"],
-        mensalidade: dados["mensalidade"],
-        locado: dados["locado"],
-      );
-
-      _listaProdutos.add(produto);
-    }
-    return _listaProdutos;
-  }
-
+class _ProfileLocacaoState extends State<ProfileLocacao> {
   Future<List> recuperarClientes() async {
     _listaClientes = [];
     FirebaseFirestore database = FirebaseFirestore.instance;
@@ -114,165 +66,45 @@ class _FormLocacoesState extends State<FormLocacoes> {
     return _listaClientes;
   }
 
-  final _dataInicial = TextEditingController(text: DateTime.now().toString());
-  // final _dataFinal = TextEditingController(
-  //     text: formatDate(DateTime.now(), [dd, "/", mm, "/", yyyy]));
-  final _dataVencimento =
-      TextEditingController(text: DateTime.now().toString());
+  List<Cliente> _listaClientes = [];
+  List<Produto> _listaProdutos = [];
 
-  late DateTime _dataInicialCast;
-  late DateTime _dataVencimentoCast;
+  Future<List> _recuperarProdutos() async {
+    _listaProdutos = [];
 
-  // final locationPeriod = _dataFinal.difference(_dataInicial);
-
-  final _cepController = TextEditingController();
-  final _complementoController = TextEditingController();
-  final _numeroController = TextEditingController();
-  final _logradouroController = TextEditingController();
-  final _bairroController = TextEditingController();
-  final _cidadeController = TextEditingController();
-  final _estadoController = TextEditingController();
-  final _obraController = TextEditingController();
-  final _prazoController = TextEditingController();
-  final _mensalidadeController = TextEditingController();
-  final _freteController = TextEditingController(text: "0,00");
-  final _valorTotalController = TextEditingController();
-  final _descontoController = TextEditingController(text: "0,00");
-
-  final List<Cobranca> _listaCobrancas = [];
-  late Locacao locacao;
-
-  // String totalValue = _getTotalValor(produtosSelecionados).toString();
-
-  double _getTotalValor(List<SelectedProduct> listaProdutos) {
-    double valorTotal = 0;
-
-    for (var produto in produtosSelecionados) {
-      valorTotal += produto.valor;
-    }
-    return valorTotal;
-  }
-
-  _criarListaCobrancas(int prazoLocacao) {
-    Jiffy dataVencimento = Jiffy([
-      _dataVencimentoCast.year,
-      _dataVencimentoCast.month,
-      _dataVencimentoCast.day,
-    ]);
-    for (int i = 0; i < prazoLocacao; i++) {
-      Cobranca cobranca = Cobranca(
-        vencimento: dataVencimento.dateTime,
-        cliente: dropValueCliente.dropDownValue!.value as Cliente,
-        produtos: produtosSelecionados,
-        valor: _getTotalValor(produtosSelecionados),
-      );
-      dataVencimento.add(months: 1);
-      _listaCobrancas.add(cobranca);
-    }
-  }
-
-  DateTime _generateDevolutionDate(int prazoLocacao) {
-    Jiffy dataDevolucao = Jiffy([
-      _dataInicialCast.year,
-      _dataInicialCast.month,
-      _dataInicialCast.day,
-    ]);
-    dataDevolucao = dataDevolucao.add(months: (prazoLocacao));
-    return dataDevolucao.dateTime;
-  }
-
-  _cadastrarLocacao() async {
-    //TODO CORRIGIR NAO TA ACUMULANDO O NUMERO DO CONTRATO
     FirebaseFirestore database = FirebaseFirestore.instance;
-    int prazoLocacao = int.parse(_prazoController.text);
+    QuerySnapshot querySnapshot = await database
+        .collection("produtos")
+        .where("excluido", isEqualTo: false)
+        .where("locado", isEqualTo: false)
+        .orderBy("nome")
+        .orderBy("codigo")
+        .get();
+    for (DocumentSnapshot item in querySnapshot.docs) {
+      var dados = item.data() as Map<String, dynamic>;
+      var dadoID = item.id;
 
-    _dataVencimentoCast = DateTime.parse(_dataVencimento.text.toString());
-    _dataInicialCast = DateTime.parse(_dataInicial.text.toString());
+      Produto produto = Produto(
+        id: dadoID,
+        dataCompra: dados["dataCompra"],
+        nome: dados["nome"],
+        codigo: dados["codigo"],
+        valorCompra: dados["valorCompra"],
+        mensalidade: dados["mensalidade"],
+        locado: dados["locado"],
+      );
 
-    // int? numeroContrato;
-    // Future<int> _getContractNumber() async {
-    //   FirebaseFirestore database = FirebaseFirestore.instance;
-    //   QuerySnapshot querySnapshot = await database
-    //       .collection("locacao")
-    //       .doc("NHcwdvXA3fcNQtx91Ldf")
-    //       .get() as QuerySnapshot<Object?>;
-    //   for (DocumentSnapshot item in querySnapshot.docs) {
-    //     var dados = item.data() as Map<String, dynamic>;
-    //     var idContrato = item.id;
-    //     return numeroContrato = int.parse(idContrato);
-    //   }
-    //   return numeroContrato! as Future<int>;
-    // }
-
-    // _generateNewContractNumber() async {
-    //   FirebaseFirestore database = FirebaseFirestore.instance;
-    //   await database
-    //       .collection("locacao")
-    //       .doc("NHcwdvXA3fcNQtx91Ldf")
-    //       .set({"idContrato": numeroContrato! + 1});
-    // }
-
-    _criarListaCobrancas(prazoLocacao);
-
-    Locacao locacao = Locacao(
-      valorTotal: _getTotalValor(produtosSelecionados),
-      dataDevolucao: _generateDevolutionDate(prazoLocacao),
-      numeroContrato: 1,
-      cliente: dropValueCliente.dropDownValue!.value,
-      produtos: produtosSelecionados,
-      dataInicial: _dataInicialCast,
-      prazoLocacao: prazoLocacao,
-      dataPrimeiraCobranca: _dataVencimentoCast,
-      logradouroObra: _logradouroController.text,
-      cep: _cepController.text,
-      complemento: _complementoController.text,
-      numero: _numeroController.text,
-      cidade: _cidadeController.text,
-      estado: _estadoController.text,
-      bairro: _bairroController.text,
-      frete: double.tryParse(_freteController.text.replaceAll(",", ".")),
-      cobrancas: _listaCobrancas,
-      obraDeclarada: _obraController.text,
-      desconto: double.tryParse(_descontoController.text.replaceAll(",", ".")),
-    );
-
-    //GERANDO O DOC ID E ADD A COLLECTION JA COM ID MAPEADO
-    CollectionReference toolsCollectionRef =
-        FirebaseFirestore.instance.collection("locacao");
-    String newDocID = toolsCollectionRef.doc().id;
-
-    await database.collection("locacao").doc(newDocID).set({
-      ...locacao.toJson(),
-      "id": newDocID,
-    });
-
-    for (var produtinho in produtosSelecionados) {
-      await database
-          .collection("produtos")
-          .doc(produtinho.produto.id)
-          .update({"locado": true});
+      _listaProdutos.add(produto);
     }
+    return _listaProdutos;
+  }
 
-    _dataInicial.text = DateTime.now().toString();
-    _prazoController.text = "";
-    _dataVencimento.text = DateTime.now().toString();
-    _logradouroController.text = "";
-    _cepController.text = "";
-    _complementoController.text = "";
-    _numeroController.text = "";
-    _cidadeController.text = "";
-    _estadoController.text = "";
-    _bairroController.text = "";
-    _freteController.text = "";
-
-    // for (var produto in produtosSelecionados) {
-    //   final locadoStatus =
-    //       await database.collection("produtos").doc();
-    // }
-
-    Navigator.pop(context);
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => const LocacaoPage()));
+  Future<void> _initController() async {
+    await _recuperarProdutos();
+    await recuperarClientes();
+    _changeDropList();
+    _changeDropProductList();
+    setState(() {});
   }
 
   _changeDropList() async {
@@ -316,7 +148,159 @@ class _FormLocacoesState extends State<FormLocacoes> {
   var widgetListProdutoAdicionado = false;
 
   @override
+  void initState() {
+    super.initState();
+    _initController();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _dataInicial = TextEditingController(text: DateTime.now().toString());
+    // final _dataFinal = TextEditingController(
+    //     text: formatDate(DateTime.now(), [dd, "/", mm, "/", yyyy]));
+    final _dataVencimento =
+        TextEditingController(text: DateTime.now().toString());
+
+    late DateTime _dataInicialCast;
+    late DateTime _dataVencimentoCast;
+
+    // final locationPeriod = _dataFinal.difference(_dataInicial);
+
+    final _cepController = TextEditingController(text: widget.locacao.cep);
+    final _complementoController =
+        TextEditingController(text: widget.locacao.complemento);
+    final _numeroController =
+        TextEditingController(text: widget.locacao.numero);
+    final _logradouroController =
+        TextEditingController(text: widget.locacao.logradouroObra);
+    final _bairroController =
+        TextEditingController(text: widget.locacao.bairro);
+    final _cidadeController =
+        TextEditingController(text: widget.locacao.cidade);
+    final _estadoController =
+        TextEditingController(text: widget.locacao.estado);
+    final _obraController =
+        TextEditingController(text: widget.locacao.obraDeclarada);
+    final _prazoController =
+        TextEditingController(text: widget.locacao.prazoLocacao.toString());
+    final _mensalidadeController = TextEditingController();
+    final _freteController =
+        TextEditingController(text: widget.locacao.frete.toString());
+    final _valorTotalController =
+        TextEditingController(text: widget.locacao.valorTotal.toString());
+    final _descontoController =
+        TextEditingController(text: widget.locacao.desconto.toString());
+
+    final List<Cobranca> _listaCobrancas = [];
+    late Locacao locacao;
+
+    double _getTotalValor(List<SelectedProduct> listaProdutos) {
+      double valorTotal = 0;
+
+      for (var produto in produtosSelecionados) {
+        valorTotal += produto.valor;
+      }
+      return valorTotal;
+    }
+
+    _criarListaCobrancas(int prazoLocacao) {
+      Jiffy dataVencimento = Jiffy([
+        _dataVencimentoCast.year,
+        _dataVencimentoCast.month,
+        _dataVencimentoCast.day,
+      ]);
+      for (int i = 0; i < prazoLocacao; i++) {
+        Cobranca cobranca = Cobranca(
+          vencimento: dataVencimento.dateTime,
+          cliente: dropValueCliente.dropDownValue!.value as Cliente,
+          produtos: produtosSelecionados,
+          valor: _getTotalValor(produtosSelecionados),
+        );
+        dataVencimento.add(months: 1);
+        _listaCobrancas.add(cobranca);
+      }
+    }
+
+    DateTime _generateDevolutionDate(int prazoLocacao) {
+      Jiffy dataDevolucao = Jiffy([
+        _dataInicialCast.year,
+        _dataInicialCast.month,
+        _dataInicialCast.day,
+      ]);
+      dataDevolucao = dataDevolucao.add(months: (prazoLocacao + 1));
+      return dataDevolucao.dateTime;
+    }
+
+    _getContractNumber() {}
+
+    _cadastrarLocacao() async {
+      //TODO CORRIGIR NAO TA ACUMULANDO O NUMERO DO CONTRATO
+      FirebaseFirestore database = FirebaseFirestore.instance;
+      int prazoLocacao = int.parse(_prazoController.text);
+
+      _dataVencimentoCast = DateTime.parse(_dataVencimento.text.toString());
+      _dataInicialCast = DateTime.parse(_dataInicial.text.toString());
+
+      _criarListaCobrancas(prazoLocacao);
+
+      Locacao locacao = Locacao(
+        dataDevolucao: _generateDevolutionDate(prazoLocacao),
+        numeroContrato: 1000, //TODO RECONSTRUIR ESSA LOGICA
+        cliente: dropValueCliente.dropDownValue!.value,
+        produtos: produtosSelecionados,
+        dataInicial: _dataInicialCast,
+        prazoLocacao: prazoLocacao,
+        dataPrimeiraCobranca: _dataVencimentoCast,
+        logradouroObra: _logradouroController.text,
+        cep: _cepController.text,
+        complemento: _complementoController.text,
+        numero: _numeroController.text,
+        cidade: _cidadeController.text,
+        estado: _estadoController.text,
+        bairro: _bairroController.text,
+        frete: double.tryParse(_freteController.text),
+        cobrancas: _listaCobrancas,
+      );
+
+      //GERANDO O DOC ID E ADD A COLLECTION JA COM ID MAPEADO
+      CollectionReference toolsCollectionRef =
+          FirebaseFirestore.instance.collection("locacao");
+      String newDocID = toolsCollectionRef.doc().id;
+
+      await database.collection("locacao").doc(newDocID).set({
+        ...locacao.toJson(),
+        "id": newDocID,
+      });
+
+      for (var produtinho in produtosSelecionados) {
+        await database
+            .collection("produtos")
+            .doc(produtinho.produto.id)
+            .update({"locado": true});
+      }
+
+      _dataInicial.text = DateTime.now().toString();
+      _prazoController.text = "";
+      _dataVencimento.text = DateTime.now().toString();
+      _logradouroController.text = "";
+      _cepController.text = "";
+      _complementoController.text = "";
+      _numeroController.text = "";
+      _cidadeController.text = "";
+      _estadoController.text = "";
+      _bairroController.text = "";
+      _freteController.text = "";
+
+      // for (var produto in produtosSelecionados) {
+      //   final locadoStatus =
+      //       await database.collection("produtos").doc();
+      // }
+
+      Navigator.pop(context);
+      Navigator.pushReplacement(context,
+          MaterialPageRoute(builder: (context) => const LocacaoPage()));
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 1, 3, 112),
@@ -410,6 +394,10 @@ class _FormLocacoesState extends State<FormLocacoes> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(8, 10, 5, 15),
                       child: TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                          RealInputFormatter(),
+                        ],
                         controller: _prazoController,
                         keyboardType: TextInputType.number,
                         decoration: InputDecoration(
@@ -479,7 +467,7 @@ class _FormLocacoesState extends State<FormLocacoes> {
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(5, 10, 8, 15),
                       child: TextFormField(
-                        enabled: false,
+                        enabled: true,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                           CentavosInputFormatter(),

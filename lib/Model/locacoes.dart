@@ -1,13 +1,23 @@
 // ignore_for_file: prefer_typing_uninitialized_variables
 
+import 'package:json_annotation/json_annotation.dart';
+import 'package:mais_locacoes/Model/cobranca.dart';
+import 'package:mais_locacoes/Model/produto_selecionado.dart';
 import 'cliente.dart';
-import 'produto.dart';
 
+part 'locacoes.g.dart';
+
+@JsonSerializable(anyMap: true, explicitToJson: true)
 class Locacao {
-  late Cliente cliente;
-  late List<Produto> produtos;
+  String? obraDeclarada;
+  String? id;
+  int numeroContrato = 0;
+  Cliente cliente;
+  List<SelectedProduct> produtos;
+  List<Cobranca> cobrancas;
   var dataPrimeiraCobranca;
   var dataInicial;
+  var dataDevolucao;
   var prazoLocacao;
   String? logradouroObra;
   String? cep;
@@ -19,8 +29,13 @@ class Locacao {
   double? frete;
   double? desconto;
   bool? statusAtiva;
+  double? valorTotal;
 
   Locacao({
+    this.obraDeclarada,
+    this.valorTotal,
+    this.id,
+    this.dataDevolucao,
     required this.cliente,
     required this.produtos,
     required this.dataInicial,
@@ -35,27 +50,13 @@ class Locacao {
     required this.estado,
     this.frete,
     this.desconto,
-    this.statusAtiva,
+    this.statusAtiva = true,
+    required this.cobrancas,
+    required this.numeroContrato,
   });
 
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
-      "cliente": cliente.nome,
-      "produtos": produtos,
-      "dataInicial": dataInicial,
-      "prazo": prazoLocacao,
-      "dataPrimeiraCobranca": dataPrimeiraCobranca,
-      "logradouroObra": logradouroObra,
-      "cep": cep,
-      "complemento": complemento,
-      "bairro": bairro,
-      "cidade": cidade,
-      "estado": estado,
-      "desconto": desconto,
-      "frete": frete,
-      "numero": numero,
-      "statusAtiva": statusAtiva,
-    };
-    return map;
-  }
+  factory Locacao.fromJson(Map<String, dynamic> json) =>
+      _$LocacaoFromJson(json);
+
+  Map<String, dynamic> toJson() => _$LocacaoToJson(this);
 }

@@ -62,7 +62,7 @@ class _ProfilePFState extends State<ProfilePF> {
     Reference pastaRaiz = storage.ref();
     Reference arquivo = pastaRaiz
         .child("fotoCliente")
-        .child(DateTime.now().toString() + ".jpg");
+        .child(widget.cliente.id.toString() + ".jpg");
 
     UploadTask task = arquivo.putFile(file);
 

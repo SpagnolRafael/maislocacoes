@@ -5,8 +5,7 @@ import 'package:date_time_picker/date_time_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mais_locacoes/Model/produto.dart';
-
-import '../BottomAppBar/produtos_page.dart';
+import 'package:mais_locacoes/View/BottomAppBar/produtos_page.dart';
 
 class FormProduto extends StatefulWidget {
   const FormProduto({Key? key}) : super(key: key);
@@ -34,6 +33,7 @@ class _FormProdutoState extends State<FormProduto> {
       var dataSelecionada = _dataCompraController.text;
       bool excluido = false;
       bool locado = false;
+
       Produto produto = Produto(
         nome: nome,
         codigo: codigo,
@@ -52,8 +52,16 @@ class _FormProdutoState extends State<FormProduto> {
       _codigoController.text = "";
 
       FirebaseFirestore database = FirebaseFirestore.instance;
+      CollectionReference toolsCollectionRef =
+          FirebaseFirestore.instance.collection("produtos");
+      String newDocID = toolsCollectionRef.doc().id;
 
-      await database.collection("produtos").doc().set(produto.toMap());
+      await database.collection("produtos").doc(newDocID).set({
+        ...produto.toJson(),
+        "id": newDocID,
+      });
+
+      // final docRef = database.collection("produtos").doc()
 
       Navigator.pop(context);
       Navigator.pushReplacement(context,

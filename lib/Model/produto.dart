@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'produto.g.dart';
+
+@JsonSerializable(anyMap: true, explicitToJson: true)
 class Produto {
   String? id;
   String? nome;
@@ -25,21 +30,7 @@ class Produto {
     this.custoManutencao,
     this.manutencao,
   });
-
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> map = {
-      "id": id,
-      "nome": nome,
-      "codigo": codigo,
-      "valorCompra": valorCompra,
-      "mensalidade": mensalidade,
-      "custoManutencao": custoManutencao,
-      "manutencao": manutencao,
-      "dataCompra": dataCompra,
-      "excluido": excluido,
-      "fornecedor": fornecedor,
-      "locado": locado,
-    };
-    return map;
-  }
+  factory Produto.fromJson(Map<String, dynamic> json) =>
+      _$ProdutoFromJson(json);
+  Map<String, dynamic> toJson() => _$ProdutoToJson(this);
 }
